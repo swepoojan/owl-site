@@ -61,11 +61,13 @@ window.OWL_API = window.OWL_API || "https://459vn001-8000.inc1.devtunnels.ms";
       var text = input.value.trim(); if (!text) return;
       input.value = ''; bubble(text, true);
       var typing = bubble('\u2026');
-      fetch(api + '/api/chat', { method: 'POST', headers: Object.assign({ 'Content-Type': 'application/json' }, H),
+      var ctrl = window.AbortController ? new AbortController() : null;
+      var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 60000);
+      fetch(api + '/api/chat', { method: 'POST', signal: ctrl ? ctrl.signal : undefined, headers: Object.assign({ 'Content-Type': 'application/json' }, H),
         body: JSON.stringify({ slug: slug, visitor_id: visitor, message: text }) })
         .then(function (r) { return r.json(); })
-        .then(function (d) { typing.textContent = d.reply || 'Sorry, something went wrong.'; log.scrollTop = log.scrollHeight; })
-        .catch(function () { typing.textContent = 'Connection problem. Please try again.'; });
+        .then(function (d) { clearTimeout(timer); typing.textContent = d.reply || 'Sorry, something went wrong.'; log.scrollTop = log.scrollHeight; })
+        .catch(function () { clearTimeout(timer); typing.textContent = 'Sorry, that took too long. Please try again, or leave your email or phone and the team will reply.'; });
     };
     window.OwlFrontDeskWidget = { open: open, close: hide, input: input, form: form };
     if (autoOpen) setTimeout(open, 600);
