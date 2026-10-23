@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>window.OWL_API = "https://459vn001-8000.inc1.devtunnels.ms";</script><script>
+if (!/^\/demo\/[^/]+\/?$/.test(location.pathname)) location.replace(OWL_API + location.pathname + location.search + location.hash);
+</script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI assistant preview · Owl Front Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#ffffff;--bg2:#f5f7fb;--fg:#0f172a;--muted:#5b6475;--line:#e3e7ef;--brand:#2563eb;--brand2:#1d4ed8;--ok:#059669;--card:#ffffff;--warn:#b45309}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1020;--bg2:#121933;--fg:#e8ecf5;--muted:#9aa4b8;--line:#243052;--card:#141c38;--brand:#5b8cff;--brand2:#7aa2ff;--ok:#34d399;--warn:#fbbf24}}
+:root[data-theme="dark"]{--bg:#0b1020;--bg2:#121933;--fg:#e8ecf5;--muted:#9aa4b8;--line:#243052;--card:#141c38;--brand:#5b8cff;--brand2:#7aa2ff;--ok:#34d399;--warn:#fbbf24}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font-family:Inter,system-ui,sans-serif;line-height:1.55}
+a{color:var(--brand)}.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+.btn{display:inline-block;background:var(--brand);color:#fff;border:none;border-radius:10px;padding:12px 20px;font-weight:600;font-size:15px;text-decoration:none;cursor:pointer}
+.btn:hover{background:var(--brand2)}.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
+input,textarea,select{font:inherit;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--fg);width:100%}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
+.muted{color:var(--muted)}.grid{display:grid;gap:18px}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:500}.pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:600;background:var(--bg2);border:1px solid var(--line)}
+.pill.active{color:var(--ok)}.pill.demo{color:var(--warn)}
+</style>
+<style>
+.top{background:var(--brand);color:#fff;padding:10px 16px;font-size:14px;text-align:center}
+.layout{display:grid;grid-template-columns:1fr 320px;gap:22px;padding:24px 16px;max-width:1240px;margin:0 auto}
+.browser{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;color:#111;min-height:620px}
+.bar{background:#eef0f4;padding:10px 12px;display:flex;gap:8px;align-items:center}.dot{width:11px;height:11px;border-radius:50%;background:#d1d5db}
+.url{flex:1;background:#fff;border-radius:7px;padding:5px 10px;font-size:13px;color:#555;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.site{padding:46px 40px}.site h1{font-size:38px;margin:0 0 12px;letter-spacing:-.02em;color:#111}.site p{color:#444;max-width:560px}
+.site .nav{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;color:#555;margin-bottom:46px}.ph{height:14px;background:#eceef2;border-radius:6px;margin:10px 0}
+.side .card{margin-bottom:16px}.side h3{margin:0 0 6px}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.site{padding:28px 20px}}
+</style>
+</head>
+<body>
+<div class="top" id="top">✨ Loading your AI assistant preview…</div>
+<div class="layout">
+  <div class="browser" aria-label="Website preview">
+    <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><div class="url" id="url"></div></div>
+    <div class="site">
+      <div class="nav" id="nav"></div>
+      <h1 id="name"></h1>
+      <p id="intro"></p>
+      <div style="margin-top:40px;max-width:520px"><div class="ph" style="width:90%"></div><div class="ph" style="width:75%"></div><div class="ph" style="width:82%"></div><div class="ph" style="width:60%"></div></div>
+    </div>
+  </div>
+  <aside class="side">
+    <div class="card"><h3>Try asking:</h3><ul class="muted" style="padding-left:18px;margin:6px 0">
+      <li>What services do you offer?</li><li>What are your opening hours?</li><li>How much does it cost?</li><li>I'd like to book an appointment</li></ul></div>
+    <div class="card"><h3>Make it live on your site</h3>
+      <p class="muted" style="font-size:14px">It answers 24/7 and emails you every lead. Setup is included and you can cancel anytime.</p>
+      <div id="buy"></div>
+      <p class="muted" style="font-size:12px;margin-bottom:0" id="days"></p>
+    </div>
+  </aside>
+</div>
+<script>
+(function () {
+  var slug = decodeURIComponent(location.pathname.split('/')[2] || '');
+  var H = { 'X-Tunnel-Skip-AntiPhishing-Page': 'true', 'ngrok-skip-browser-warning': '1' };
+  function t(id, v) { document.getElementById(id).textContent = v; }
+  fetch(OWL_API + '/api/demo/' + encodeURIComponent(slug), { headers: H }).then(function (r) {
+    if (!r.ok) throw new Error(r.status); return r.json();
+  }).then(function (d) {
+    document.title = d.business_name + ' · AI assistant preview';
+    document.getElementById('top').innerHTML = '';
+    document.getElementById('top').append('✨ Preview: the AI assistant we built for ', Object.assign(document.createElement('b'), { textContent: d.business_name }),
+      ' from its website. Try it in the chat window at the bottom right.');
+    t('url', d.website); t('name', d.business_name); t('intro', d.intro + '…');
+    d.headings.forEach(function (h) { document.getElementById('nav').appendChild(Object.assign(document.createElement('span'), { textContent: h })); });
+    var buy = document.getElementById('buy'), any = false;
+    d.plans.forEach(function (p) {
+      if (!d.checkout[p.id]) return; any = true;
+      var a = Object.assign(document.createElement('a'), { href: d.checkout[p.id], textContent: p.name + ': $' + p.price + '/mo' });
+      a.className = 'btn' + (p.popular ? '' : ' ghost'); a.style.cssText = 'width:100%;text-align:center;margin:5px 0'; buy.appendChild(a);
+    });
+    var m = Object.assign(document.createElement('a'), { textContent: any ? 'Prefer an invoice / bank transfer?' : 'Activate my assistant',
+      href: 'mailto:' + d.contact_email + '?subject=' + encodeURIComponent('Activate my assistant (' + d.slug + ')') });
+    m.className = 'btn' + (any ? ' ghost' : ''); m.style.cssText = 'width:100%;text-align:center;margin:5px 0'; buy.appendChild(m);
+    t('days', 'Preview active for ' + d.days_left + ' more days.');
+    var s = document.createElement('script'); s.src = '/widget.js'; s.setAttribute('data-bot', d.slug); s.setAttribute('data-open', 'true');
+    document.body.appendChild(s);
+  }).catch(function () {
+    t('top', 'This preview is temporarily unavailable. Please try again in a few minutes.');
+  });
+})();
+</script>
+</body>
+</html>
